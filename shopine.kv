@@ -1,0 +1,192 @@
+#:kivy 1.10.0
+
+<ItemDataLabel@Label>:
+	markup: True
+	halign: 'left'
+	valign: 'center'
+	bold:True
+	underline:True
+	color:[1,1,1,1]
+    size_hint_y: None
+    text_size: self.width, None
+    height: self.texture_size[1]	
+
+[ItemRecord@BoxLayout]:
+    size_hint_y: None
+    height: '60dp'
+    width: root.width
+	padding: '10dp'
+	spacing: '10dp'
+	orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgb: 0.2, 0.2, 0.2
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+	AsyncImage:
+		source: ctx.ItemThumbImageURL
+		size_hint: 0.2, 1
+	ItemDataLabel:
+		text: '[ref=' + ctx.ItemName[:30]+'...' +']' + ctx.ItemName[:30]+'...' + '[/ref]'
+		size_hint: 0.6, 1
+		on_ref_press:
+			import webbrowser
+			webbrowser.open(ctx.ItemURL)
+
+	ItemDataLabel:
+		text: '[ref=' + str(ctx.ItemPrice['PriceString']) +']' + str(ctx.ItemPrice['PriceString']) + '[/ref]'
+		size_hint: 0.15, 1
+		on_ref_press:
+			import webbrowser
+			webbrowser.open(ctx.ItemURL)
+	Image:
+		source: app.get_itemsource_image(ctx.ItemSource)
+		size_hint: 0.05, 1
+
+<LocationDropDownItem@Button>:
+	size_hint_y: None
+	height: 40
+
+
+<LocationDropDown>:
+	id: location
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+	LocationDropDownItem:
+		text: 'Any'
+		on_release: root.select(self.text)
+
+	LocationDropDownItem:
+		text: 'U.S.'
+		on_release: root.select('U.S.')
+
+	LocationDropDownItem:
+		text: 'Canada'
+		on_release: root.select('Canada')
+
+	LocationDropDownItem:
+		text: 'U.K.'
+		on_release: root.select('U.K.')
+
+
+
+<ImageButton@ButtonBehavior+Image>:
+
+
+<SearchBox>:
+    BoxLayout:
+        id: searchbox
+        orientation: 'vertical'
+        padding: ['10dp','10dp','10dp','10dp']
+        spacing: '10dp'
+
+        BoxLayout:
+			id: basicsearch
+            orientation: 'horizontal'
+			spacing: '0dp'
+
+            TextInput:
+                id: searchkeyword
+				hint_text: 'search by keywords'
+                multiline:False
+				size_hint: 0.9, None
+				height: 40
+				font_size: self.height -15
+
+			ImageButton:
+				source: 'img/searchbutton.png'
+				size_hint: 0.1, None
+				height: 40
+				allow_stretch: True
+				on_press:
+					self.source='img/spinning.png'
+				on_release: 
+					self.source='img/searchbutton.png'
+					root.do_search(searchkeyword.text, maxprice.text, btnlocation.text)
+
+
+        StackLayout:
+			id: advsearch
+            orientation: 'lr-tb'
+			spacing: '10dp'
+
+
+			TextInput:
+				id: maxprice
+				hint_text: 'Max Price'
+				multiline:False
+				font_size: self.height - 15
+				input_filter: 'int'
+				size_hint: 0.40, None
+				height: 40
+
+			Button:
+				id: btnlocation
+				text: 'Item Location'
+				size_hint: 0.40, None
+				height: 40
+
+			ImageButton:
+				id: btnreset
+				source: 'img/reset.png'
+				size_hint: 0.1, None
+				height: 40
+				allow_stretch: True
+				on_press:
+					self.source='img/reset_pressed.png'
+				on_release: 
+					root.do_reset()
+					self.source='img/reset.png'
+
+<ItemListDisplay>:
+	orientation: 'horizontal'
+
+<NoResultDisplay@Label>:
+	text: "No items found."
+
+<ItemsResultDisplay@ScrollView>:
+	id: resultscrollvie
+	size_hint_y: 1
+	#height: root.height
+
+	ItemListDisplay:
+		id:itemlistdisplay
+		orientation: 'vertical'
+		cols: 3
+		size_hint_y: None
+		height: self.minimum_height
+		spacing: '2dp'
+
+BoxLayout:
+	orientation: 'vertical'
+	padding: ['10dp','20dp','10dp','20dp']
+
+    Label:
+        text: 'Shopine'
+        font_size: 32
+		size_hint_y: 0.1
+
+	SearchBox:
+		id:searchbox
+		size_hint_y: 0.4
+
+	AnchorLayout:
+		id: anchorlayout
+		anchor_x: 'center'
+		anchor_y: 'top'
+		
+		ItemsResultDisplay:
+			id: itemsresultdisplay
+			opacity:1
+		NoResultDisplay:
+			id: noresultdisplay
+			opacity:0
+			
+		
