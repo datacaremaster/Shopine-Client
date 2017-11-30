@@ -16,7 +16,7 @@
 					Web app
 			   </li>
 				<li>
-					Mobile app
+					Mobile app (available at Google App Store and Apple App Store)
 			   </li>
 			</ul>
 			<p>The desktop app and mobile app are built in same Python Kivy code. Source ccde is pushed here.</p>
